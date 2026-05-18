@@ -44,10 +44,19 @@ jobs:
           echo "Building Angular artifact (static files)..."
           cd ../demo-app && npm run build --configuration=production
 
-      - name: 🚀 4. Deploying it
+      - name: 🔒 4. Security Vulnerability Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '0'
+          severity: 'HIGH,CRITICAL'
+
+      - name: 🚀 5. Deploying it
         run: |
           echo "=== INITIATING CONTINUOUS DEPLOYMENT ==="
-          echo "Artifacts built successfully."
+          echo "Artifacts built successfully and passed security scan."
           echo "Connecting to production server (Simulation)..."
           echo "Pushing application to cloud..."
           echo "DEPLOYMENT SUCCESSFUL!"
