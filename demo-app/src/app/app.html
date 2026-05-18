@@ -1,0 +1,24 @@
+@if (loginStore.isAuthenticated()) {
+  <nav style="padding: 15px; background: #2c3e50; color: white; display: flex; gap: 15px; align-items: center;">
+    <strong style="font-size: 1.2rem; margin-right: 20px;">DemoApp</strong>
+
+    @if (loginStore.role() === 'ADMIN') {
+      <button mat-button routerLink="/people" style="color: white;">Users</button>
+      <button mat-button routerLink="/products" style="color: white;">Products Inventory</button>
+      <button mat-button routerLink="/orders" style="color: white;">Incoming Orders</button>
+    }
+
+    @if (loginStore.role() === 'CUSTOMER') {
+      <button mat-button routerLink="/customer" style="color: white;">Shop Now</button>
+    }
+
+    <span style="flex: 1 1 auto;"></span>
+
+    <span style="font-size: 0.8rem; opacity: 0.8;">Role: {{ loginStore.role() }}</span>
+    <button mat-flat-button color="warn" (click)="loginStore.logout()">Logout</button>
+  </nav>
+}
+
+<div style="margin-top: 20px;">
+  <router-outlet></router-outlet>
+</div>

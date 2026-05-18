@@ -1,0 +1,50 @@
+<div style="padding: 20px; display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start;">
+
+  <div style="flex: 2; min-width: 300px;">
+    <h2>Available Products</h2>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+
+      @for (p of products; track p.id) {
+        <mat-card style="padding: 15px; width: 200px; text-align: center;">
+          <mat-icon style="font-size: 40px; height: 40px; width: 40px; margin: 0 auto 10px;">inventory_2</mat-icon>
+          <h3>{{p.name}}</h3>
+          <p style="color: #2e7d32; font-weight: bold; font-size: 1.2rem;">${{p.price}}</p>
+          <button mat-stroked-button color="primary" (click)="addToCart(p)">Add to Cart</button>
+        </mat-card>
+      } @empty {
+        <p style="color: #666;">No products available at the moment.</p>
+      }
+
+    </div>
+  </div>
+
+  <div style="flex: 1; min-width: 250px; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2>Your Cart</h2>
+
+    @if (cart.length === 0) {
+      <p style="color: #888; font-style: italic;">Your cart is empty...</p>
+    }
+
+    @for (item of cart; track $index; let i = $index) {
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+        <span>{{item.name}}</span>
+        <span>
+          <strong>${{item.price}}</strong>
+          <button mat-icon-button color="warn" (click)="removeFromCart(i)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </span>
+      </div>
+    }
+
+    @if (cart.length > 0) {
+      <div style="margin-top: 20px;">
+        <p style="font-weight: bold;">Total items: {{cart.length}}</p>
+        <button mat-flat-button color="accent" style="width: 100%; padding: 25px 0; font-size: 1.1rem;" (click)="placeOrder()">
+          Place Order
+        </button>
+      </div>
+    }
+  </div>
+
+</div>

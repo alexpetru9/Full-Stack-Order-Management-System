@@ -1,0 +1,69 @@
+<div style="padding: 20px; max-width: 800px; margin: auto;">
+  <h2>Order Management</h2>
+
+  <mat-card style="padding: 15px; margin-bottom: 20px;">
+    <h3>{{ editingOrderId ? 'Edit Order Date' : 'Create New Order' }}</h3>
+    <div style="display: flex; gap: 15px; align-items: baseline; flex-wrap: wrap;">
+
+      <mat-form-field>
+        <mat-label>Order Date</mat-label>
+        <input matInput type="date" [(ngModel)]="newOrderDate">
+      </mat-form-field>
+
+      @if (!editingOrderId) {
+        <mat-form-field>
+          <mat-label>Customer ID (UUID)</mat-label>
+          <input matInput [(ngModel)]="newPersonId" placeholder="Paste user ID here...">
+        </mat-form-field>
+      }
+
+      <button mat-flat-button color="primary" (click)="saveOrder()" [disabled]="!newOrderDate || (!editingOrderId && !newPersonId)">
+        {{ editingOrderId ? 'Update' : 'Create' }}
+      </button>
+
+      @if (editingOrderId) {
+        <button mat-button (click)="cancelEdit()">Cancel</button>
+      }
+    </div>
+  </mat-card>
+
+  <mat-form-field style="width: 100%;">
+    <mat-label>Search Orders by ID or Date</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" style="width: 100%;">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Order ID </th>
+      <td mat-cell *matCellDef="let order"> {{order.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="orderDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Date </th>
+      <td mat-cell *matCellDef="let order"> {{order.orderDate}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let order">
+        <button mat-icon-button color="primary" (click)="editOrder(order)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteOrder(order.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="3" style="padding: 15px; text-align: center;">
+        No orders match the filter.
+      </td>
+    </tr>
+  </table>
+</div>

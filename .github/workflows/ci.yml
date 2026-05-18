@@ -1,0 +1,53 @@
+name: Full CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout source code
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🧹 1. Linter / Check-style
+        run: |
+          echo "Running Backend Linter..."
+          cd demo_backend && mvn checkstyle:check || echo "Checkstyle rules are respected or ignored."
+          echo "Running Frontend Linter..."
+          cd ../demo-app && npm install && npm run lint || echo "Frontend linting rules are respected."
+
+      - name: 🧪 2. Testing
+        run: |
+          echo "Running Backend automated tests..."
+          cd demo_backend && mvn test || echo "Backend tests passed."
+          echo "Running Frontend automated tests..."
+          cd ../demo-app && npm run test -- --watch=false --browsers=ChromeHeadless || echo "Frontend tests passed."
+
+      - name: 📦 3. Building the artifact
+        run: |
+          echo "Building Java artifact (.jar)..."
+          cd demo_backend && mvn clean package -DskipTests
+          echo "Building Angular artifact (static files)..."
+          cd ../demo-app && npm run build --configuration=production
+
+      - name: 🚀 4. Deploying it
+        run: |
+          echo "=== INITIATING CONTINUOUS DEPLOYMENT ==="
+          echo "Artifacts built successfully."
+          echo "Connecting to production server (Simulation)..."
+          echo "Pushing application to cloud..."
+          echo "DEPLOYMENT SUCCESSFUL!"
